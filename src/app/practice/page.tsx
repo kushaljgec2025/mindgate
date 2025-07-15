@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,58 +20,58 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Play, Settings, Brain } from "lucide-react";
+import { ArrowLeft, Play, Settings, Brain, Diff } from "lucide-react";
 import Link from "next/link";
-
-const streams = [
-  "Computer Science",
-  "Electronics & Communication",
-  "Electrical Engineering",
-  "Mechanical Engineering",
-  "Civil Engineering",
-  "Chemical Engineering",
-  "Instrumentation Engineering",
-];
-
-const topics = {
-  "Computer Science": [
-    "Data Structures",
-    "Algorithms",
-    "Database Management",
-    "Computer Networks",
-    "Operating Systems",
-    "Software Engineering",
-    "Digital Logic",
-    "Computer Architecture",
-  ],
-  "Electronics & Communication": [
-    "Analog Circuits",
-    "Digital Circuits",
-    "Signals & Systems",
-    "Control Systems",
-    "Communications",
-    "Electromagnetics",
-    "Electronic Devices",
-    "VLSI",
-  ],
-  "Electrical Engineering": [
-    "Electric Circuits",
-    "Control Systems",
-    "Electrical Machines",
-    "Power Systems",
-    "Analog Electronics",
-    "Digital Electronics",
-    "Signals & Systems",
-    "Measurements",
-  ],
-};
+import useQuizZustandStore from "../../app/store/quizZustandStore";
+import { streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
+import { generateAIQuestions } from "../../../utils/AIModel";
 
 export default function PracticePage() {
   const [selectedStream, setSelectedStream] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [difficulty, setDifficulty] = useState([2]);
   const [questionCount, setQuestionCount] = useState([10]);
-
+  const [loading, setLoading] = useState(false);
+  // const [quizQuestions, setQuizQuestions] = useState([]);
+  const sampleQuestions = [
+    {
+      id: 1,
+      question:
+        "What is the time complexity of searching an element in a balanced binary search tree?",
+      options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+      correct: 1,
+      explanation:
+        "In a balanced BST, the height is log n, so searching takes O(log n) time as we eliminate half the nodes at each level.",
+      topic: "Data Structures",
+      difficulty: "Medium",
+    },
+    {
+      id: 2,
+      question:
+        "Which sorting algorithm has the best average-case time complexity?",
+      options: ["Bubble Sort", "Quick Sort", "Merge Sort", "Selection Sort"],
+      correct: 2,
+      explanation:
+        "Merge Sort has a consistent O(n log n) time complexity in all cases, making it optimal for average-case scenarios.",
+      topic: "Algorithms",
+      difficulty: "Medium",
+    },
+    {
+      id: 3,
+      question: "In a relational database, what does ACID stand for?",
+      options: [
+        "Atomicity, Consistency, Isolation, Durability",
+        "Association, Consistency, Integration, Database",
+        "Atomicity, Concurrency, Isolation, Database",
+        "Association, Concurrency, Integration, Durability",
+      ],
+      correct: 0,
+      explanation:
+        "ACID properties ensure reliable database transactions: Atomicity (all or nothing), Consistency (valid state), Isolation (concurrent transactions), Durability (permanent changes).",
+      topic: "Database Management",
+      difficulty: "Easy",
+    },
+  ];
   const handleTopicToggle = (topic: string) => {
     setSelectedTopics((prev) =>
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
@@ -87,6 +88,31 @@ export default function PracticePage() {
         return "Hard";
       default:
         return "Medium";
+    }
+  };
+  const setQuestions = useQuizZustandStore((state) => state.setQuizQuestions);
+  const router = useRouter();
+  const generateQuestions = async () => {
+    setLoading(true);
+    const config = {
+      stream: selectedStream,
+      topics: selectedTopics,
+      difficulty: getDifficultyLabel(difficulty[0]),
+      questionCount: questionCount[0],
+    };
+
+    console.log("Generating questions...");
+    try {
+      const response = await generateAIQuestions(config);
+      if (response) {
+        const jsonObject = JSON.parse(response);
+        setQuestions(jsonObject); // Update Zustand
+        router.push("practice/quiz"); // Navigate AFTER setting questions
+      }
+    } catch (error) {
+      console.error("Error generating questions:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -326,15 +352,15 @@ export default function PracticePage() {
               </CardContent>
             </Card>
 
-            <Link href="/quiz">
-              <Button
-                className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg"
-                disabled={!selectedStream || selectedTopics.length === 0}
-              >
-                <Play className="h-4 w-4 mr-2" />
-                Start Practice Session
-              </Button>
-            </Link>
+            <Button
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700"
+              disabled={
+                !selectedStream || selectedTopics.length === 0 || loading
+              }
+              onClick={generateQuestions}
+            >
+              {loading ? "Generating..." : "Start Practice Session"}
+            </Button>
           </div>
         </div>
       </div>
