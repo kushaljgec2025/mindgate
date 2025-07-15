@@ -101,57 +101,44 @@ const topics = {
     "Transducers and Signal Conditioning",
   ],
 };
-const questions = [
+const sampleQuestions = [
   {
-    QuestionsDescription:
-      "Consider the CIDR block 203.0.113.0/24. If this block is to be subnetted into 8 equal-sized subnets, what is the maximum number of usable host IP addresses in each of these new subnets?",
-    Options: [
-      {
-        isCorrect: false,
-        option: "A: 28",
-      },
-      {
-        isCorrect: true,
-        option: "B: 30",
-      },
-      {
-        isCorrect: false,
-        option: "C: 14",
-      },
-      {
-        isCorrect: false,
-        option: "D: 126",
-      },
-    ],
-    Explanation:
-      "To create 8 equal-sized subnets from a /24 network, we need 3 bits for subnetting (since 2^3 = 8). These 3 bits are borrowed from the host portion. The original network mask is 24 bits. So, the new subnet mask will be 24 + 3 = 27 bits (i.e., /27). In a /27 subnet, the total number of IP addresses is 2^(32-27) = 2^5 = 32. The number of usable host IP addresses in each subnet is total addresses - 2 (one for the network address and one for the broadcast address). Therefore, 32 - 2 = 30 usable host IP addresses.",
-    Difficulty: "Medium",
+    id: 1,
+    question:
+      "What is the time complexity of searching an element in a balanced binary search tree?",
+    options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+    correct: 1,
+    explanation:
+      "In a balanced BST, the height is log n, so searching takes O(log n) time as we eliminate half the nodes at each level.",
+    topic: "Data Structures",
+    difficulty: "Medium",
   },
   {
-    QuestionsDescription:
-      "Which of the following TCP congestion control algorithms reduces the congestion window (cwnd) by half upon receiving three duplicate ACKs and then transitions to the congestion avoidance phase, instead of restarting with slow start?",
-    Options: [
-      {
-        isCorrect: false,
-        option: "A: TCP Tahoe",
-      },
-      {
-        isCorrect: true,
-        option: "B: TCP Reno",
-      },
-      {
-        isCorrect: false,
-        option: "C: TCP Vegas",
-      },
-      {
-        isCorrect: false,
-        option: "D: TCP NewReno",
-      },
+    id: 2,
+    question:
+      "Which sorting algorithm has the best average-case time complexity?",
+    options: ["Bubble Sort", "Quick Sort", "Merge Sort", "Selection Sort"],
+    correct: 2,
+    explanation:
+      "Merge Sort has a consistent O(n log n) time complexity in all cases, making it optimal for average-case scenarios.",
+    topic: "Algorithms",
+    difficulty: "Medium",
+  },
+  {
+    id: 3,
+    question: "In a relational database, what does ACID stand for?",
+    options: [
+      "Atomicity, Consistency, Isolation, Durability",
+      "Association, Consistency, Integration, Database",
+      "Atomicity, Concurrency, Isolation, Database",
+      "Association, Concurrency, Integration, Durability",
     ],
-    Explanation:
-      "TCP Tahoe, upon detecting any packet loss (whether by timeout or triple duplicate ACKs), sets the congestion window (cwnd) to 1 MSS (Maximum Segment Size) and restarts the slow-start phase. TCP Reno, on the other hand, distinguishes between loss detected by timeout and loss detected by triple duplicate ACKs. When three duplicate ACKs are received, TCP Reno performs Fast Retransmit and Fast Recovery. It halves the congestion window (cwnd = cwnd / 2 + 3 * MSS) and then transitions directly into the congestion avoidance phase, avoiding a full slow-start restart. TCP Vegas uses RTT differences to proactively detect congestion before packet loss occurs. TCP NewReno is an improvement over Reno, particularly for handling multiple packet losses within a single congestion window, but Reno is the algorithm that first introduced the specified behavior.",
-    Difficulty: "Medium",
+    correct: 0,
+    explanation:
+      "ACID properties ensure reliable database transactions: Atomicity (all or nothing), Consistency (valid state), Isolation (concurrent transactions), Durability (permanent changes).",
+    topic: "Database Management",
+    difficulty: "Easy",
   },
 ];
 
-export { streams, topics, questions };
+export { streams, topics, sampleQuestions };

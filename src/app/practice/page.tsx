@@ -25,6 +25,7 @@ import Link from "next/link";
 import useQuizZustandStore from "../../app/store/quizZustandStore";
 import { streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
 import { generateAIQuestions } from "../../../utils/AIModel";
+import Header from "../_components/Header/page";
 
 export default function PracticePage() {
   const [selectedStream, setSelectedStream] = useState("");
@@ -33,45 +34,7 @@ export default function PracticePage() {
   const [questionCount, setQuestionCount] = useState([10]);
   const [loading, setLoading] = useState(false);
   // const [quizQuestions, setQuizQuestions] = useState([]);
-  const sampleQuestions = [
-    {
-      id: 1,
-      question:
-        "What is the time complexity of searching an element in a balanced binary search tree?",
-      options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
-      correct: 1,
-      explanation:
-        "In a balanced BST, the height is log n, so searching takes O(log n) time as we eliminate half the nodes at each level.",
-      topic: "Data Structures",
-      difficulty: "Medium",
-    },
-    {
-      id: 2,
-      question:
-        "Which sorting algorithm has the best average-case time complexity?",
-      options: ["Bubble Sort", "Quick Sort", "Merge Sort", "Selection Sort"],
-      correct: 2,
-      explanation:
-        "Merge Sort has a consistent O(n log n) time complexity in all cases, making it optimal for average-case scenarios.",
-      topic: "Algorithms",
-      difficulty: "Medium",
-    },
-    {
-      id: 3,
-      question: "In a relational database, what does ACID stand for?",
-      options: [
-        "Atomicity, Consistency, Isolation, Durability",
-        "Association, Consistency, Integration, Database",
-        "Atomicity, Concurrency, Isolation, Database",
-        "Association, Concurrency, Integration, Durability",
-      ],
-      correct: 0,
-      explanation:
-        "ACID properties ensure reliable database transactions: Atomicity (all or nothing), Consistency (valid state), Isolation (concurrent transactions), Durability (permanent changes).",
-      topic: "Database Management",
-      difficulty: "Easy",
-    },
-  ];
+ 
   const handleTopicToggle = (topic: string) => {
     setSelectedTopics((prev) =>
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
@@ -118,8 +81,8 @@ export default function PracticePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
+      <Header />
+      <div className="max-w-6xl mt-4 mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <Link href="/dashboard">
             <Button

@@ -28,7 +28,6 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
       <Header />
       <div className="max-w-6xl mt-4 mx-auto">
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-red-200 to-orange-500 bg-clip-text text-transparent mb-2">
             MindGATE

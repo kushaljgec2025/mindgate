@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { sampleQuestions } from "./(data)/staticData";
+import { toast } from "sonner";
+
 import {
   Card,
   CardContent,
@@ -25,6 +28,8 @@ import {
   Clock,
 } from "lucide-react";
 import Link from "next/link";
+import useQuizZustandStore from "./store/quizZustandStore";
+import { useRouter } from "next/navigation";
 
 const features = [
   {
@@ -32,48 +37,54 @@ const features = [
     title: "AI-Powered Questions",
     description:
       "Generate unlimited practice questions tailored to your learning needs with advanced AI technology.",
-    gradient: "from-blue-500 to-indigo-600",
+    gradient: "from-yellow-500 to-orange-600",
+    status: "active",
   },
   {
     icon: BookOpen,
     title: "Previous Year Papers",
     description:
       "Access authentic GATE questions from past years, organized by stream and difficulty level.",
-    gradient: "from-green-500 to-emerald-600",
+    gradient: "from-green-400 to-emerald-700",
+    status: "Cooming Soon",
   },
   {
     icon: Target,
     title: "Personalized Learning",
     description:
       "Customize topics, difficulty levels, and question counts to match your preparation strategy.",
-    gradient: "from-purple-500 to-pink-600",
+    gradient: "from-pink-400 to-red-600",
+    status: "active",
   },
   {
     icon: TrendingUp,
     title: "Performance Analytics",
     description:
       "Track your progress with detailed analytics and identify areas that need improvement.",
-    gradient: "from-orange-500 to-red-600",
+    gradient: "from-orange-300 to-red-600",
+    status: "active",
   },
   {
     icon: Trophy,
     title: "Gamified Experience",
     description:
       "Stay motivated with streaks, achievements, and competitive leaderboards.",
-    gradient: "from-yellow-500 to-orange-600",
+    gradient: "from-violet-500 to-indigo-600",
+    status: "active",
   },
   {
     icon: Clock,
     title: "Timed Practice",
     description:
       "Simulate real exam conditions with timed practice sessions and instant feedback.",
-    gradient: "from-cyan-500 to-blue-600",
+    gradient: "from-teal-400 to-blue-500",
+    status: "active",
   },
 ];
 
 const testimonials = [
   {
-    name: "Arjun Sharma",
+    name: "Arjun Sharma DEMO",
     role: "GATE CS 2023 - AIR 45",
     content:
       "GATE Prep Master's AI questions helped me identify my weak areas. The personalized practice sessions were game-changing!",
@@ -81,7 +92,7 @@ const testimonials = [
     avatar: "/placeholder.svg?height=40&width=40",
   },
   {
-    name: "Priya Patel",
+    name: "Priya Patel DEMO",
     role: "GATE ECE 2023 - AIR 78",
     content:
       "The previous year papers section is incredibly well-organized. I could practice systematically and track my improvement.",
@@ -89,7 +100,7 @@ const testimonials = [
     avatar: "/placeholder.svg?height=40&width=40",
   },
   {
-    name: "Rahul Kumar",
+    name: "Rahul Kumar DEMO",
     role: "GATE ME 2023 - AIR 156",
     content:
       "The gamified interface kept me motivated throughout my preparation. The streak system really works!",
@@ -97,10 +108,16 @@ const testimonials = [
     avatar: "/placeholder.svg?height=40&width=40",
   },
 ];
+const showToast = (title: string, type: "success" | "error") => {
+  const toastFn = type === "error" ? toast.error : toast.success;
+  toastFn(title, {
+    duration: 2000,
+  });
+};
 
 const stats = [
-  { number: "50K+", label: "Active Students", icon: Users },
-  { number: "10K+", label: "Questions Generated", icon: Brain },
+  { number: "1K+", label: "Active Students", icon: Users },
+  { number: "5K+", label: "Questions Generated", icon: Brain },
   { number: "95%", label: "Success Rate", icon: Trophy },
   { number: "4.9/5", label: "User Rating", icon: Star },
 ];
@@ -109,41 +126,23 @@ export default function LandingPage() {
   const [email, setEmail] = useState("");
 
   return (
-    
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       {/* Navigation */}
-      <nav className="border-b border-gray-800 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="border-b border-gray-600/50 bg-black/80 backdrop-blur-sm sticky top-0 z-50 rounded-b-lg ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-orange-200 to-amber-600 rounded-lg flex items-center justify-center">
                 <Brain className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                GATE Prep Master
+              <span className="text-xl font-bold bg-gradient-to-r from-zinc-200 to-amber-600  bg-clip-text text-transparent">
+                MindGATE
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                className="text-gray-300 hover:text-white hover:bg-gray-800"
-              >
-                Features
-              </Button>
-              <Button
-                variant="ghost"
-                className="text-gray-300 hover:text-white hover:bg-gray-800"
-              >
-                Pricing
-              </Button>
-              <Button
-                variant="ghost"
-                className="text-gray-300 hover:text-white hover:bg-gray-800"
-              >
-                About
-              </Button>
+              <Button className="border-amber-600 border">Alpha Version</Button>
               <Link href="/sign-in">
-                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0">
+                <Button className="bg-gradient-to-r from-amber-400  to-amber-600 hover:from-amber-600 hover:to-amber-600 text-white border-0 cursor-pointer">
                   Sign In
                 </Button>
               </Link>
@@ -154,21 +153,27 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-r  from-black-600/10 to-zinc-600/10 blur-3xl"></div>
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <div className="mb-6">
-            <Badge className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border-blue-500/30 mb-4">
+            <Badge className="bg-gradient-to-r from-orange-600 via-amber-500 to-amber-600 text-zinc-50 border-yellow-300 mb-4">
               <Sparkles className="h-3 w-3 mr-1" />
               AI-Powered GATE Preparation
             </Badge>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-600 via-amber-200 to-amber-600 bg-clip-text text-transparent">
               Master GATE
             </span>
             <br />
-            <span className="text-white">with AI Precision</span>
+            <span className="text-white">
+              with{" "}
+              <span className="bg-gradient-to-r from-orange-600 font-extrabold   to-amber-100 bg-clip-text text-transparent">
+                AI
+              </span>{" "}
+              Precision
+            </span>
           </h1>
 
           <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -178,19 +183,24 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Link href="/">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white border-0 px-8 py-6 text-lg"
-              >
-                <Play className="h-5 w-5 mr-2" />
-                Start Free Practice
-              </Button>
-            </Link>
             <Button
+              onClick={() => {
+                showToast("Feature coming soon ! for now login", "error");
+              }}
+              size="lg"
+              className="bg-gradient-to-r from-amber-400  to-amber-600 hover:from-amber-400/90 hover:to-amber-600/90 text-white border-0 cursor-pointer px-8 py-6 text-lg"
+            >
+              <Play className="h-5 w-5 mr-2" />
+              Start Free Practice
+            </Button>
+
+            <Button
+              onClick={() => {
+                showToast("Feature coming soon ! for now login", "error");
+              }}
               size="lg"
               variant="outline"
-              className="bg-gray-800/50 border-gray-600 text-white hover:bg-gray-700 px-8 py-6 text-lg"
+              className="bg-gray-800/50 border-amber-600 text-white hover:bg-gray-700 hover:text-white px-8 py-6 text-lg"
             >
               Watch Demo
             </Button>
@@ -201,11 +211,11 @@ export default function LandingPage() {
             {stats.map((stat, index) => (
               <Card
                 key={index}
-                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700 backdrop-blur-sm"
+                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 hover:from-amber-400/40  hover:to-zinc-900/10 border-gray-700 backdrop-blur-sm"
               >
                 <CardContent className="p-4 text-center">
-                  <stat.icon className="h-6 w-6 text-blue-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-white mb-1">
+                  <stat.icon className="h-6 w-6 text-white mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-amber-400 mb-1">
                     {stat.number}
                   </div>
                   <div className="text-sm text-gray-400">{stat.label}</div>
@@ -220,7 +230,7 @@ export default function LandingPage() {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-amber-500 mb-4">
               Why Choose GATE Prep Master?
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -237,10 +247,19 @@ export default function LandingPage() {
                 className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
               >
                 <CardHeader>
-                  <div
-                    className={`w-12 h-12 bg-gradient-to-r ${feature.gradient} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-                  >
-                    <feature.icon className="h-6 w-6 text-white" />
+                  <div className="flex items-center justify-between mb-4">
+                    <div
+                      className={`w-12 h-12  bg-gradient-to-r ${feature.gradient} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                    >
+                      <feature.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      {feature.status != "active" && (
+                        <Badge className="bg-orange-500 p-2 text-white">
+                          Coming Soon
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                   <CardTitle className="text-white text-xl">
                     {feature.title}
@@ -261,7 +280,9 @@ export default function LandingPage() {
       <section className="py-20 px-4 bg-gradient-to-r from-gray-900/50 to-black/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">How It Works</h2>
+            <h2 className="text-4xl font-bold text-amber-500 mb-4">
+              How It Works
+            </h2>
             <p className="text-xl text-gray-300">
               Get started in just 3 simple steps
             </p>
@@ -269,7 +290,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-white">1</span>
               </div>
               <h3 className="text-xl font-bold text-white mb-4">
@@ -282,7 +303,7 @@ export default function LandingPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-orange-300 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-white">2</span>
               </div>
               <h3 className="text-xl font-bold text-white mb-4">
@@ -295,7 +316,7 @@ export default function LandingPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-700 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-white">3</span>
               </div>
               <h3 className="text-xl font-bold text-white mb-4">
