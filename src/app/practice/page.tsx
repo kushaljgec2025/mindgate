@@ -23,10 +23,11 @@ import { ArrowLeft, Brain, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
+import { sampleQuestions, streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
 import { generateAIQuestions } from "../../../utils/AIModel";
 import useQuizZustandStore from "../../app/store/quizZustandStore";
 import Header from "../_components/Header/page";
+// Importing sample questions for testing
 
 export default function PracticePage() {
   const [selectedStream, setSelectedStream] = useState("");
@@ -66,20 +67,20 @@ export default function PracticePage() {
     };
 
     console.log("Generating questions...");
-    try {
-      const response = await generateAIQuestions(config);
-      if (response) {
-        const jsonObject = JSON.parse(response);
-        setQuestions(jsonObject); // Update Zustand
-        router.push("/quiz"); // Navigate AFTER setting questions
-      }
-    } catch (error) {
-      console.error("Error generating questions:", error);
-    } finally {
-      setLoading(false);
-    }
-    // setQuestions(sampleQuestions);
-    // router.push("practice/quiz");
+    // try {
+    //   const response = await generateAIQuestions(config);
+    //   if (response) {
+    //     const jsonObject = JSON.parse(response);
+    //     setQuestions(jsonObject); // Update Zustand
+    //     router.push("/quiz"); // Navigate AFTER setting questions
+    //   }
+    // } catch (error) {
+    //   console.error("Error generating questions:", error);
+    // } finally {
+    //   setLoading(false);
+    // }
+    setQuestions(sampleQuestions);
+    router.push("/quiz");
   };
 
   return (

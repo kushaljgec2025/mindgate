@@ -91,7 +91,7 @@ export default function QuizPage() {
                 <Trophy className="h-8 w-8 text-white" />
               </div>
               <CardTitle className="text-2xl text-white">
-                Quiz Completed!
+                Quiz Completed !
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -135,11 +135,11 @@ export default function QuizPage() {
                 )}
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-4">
                 <Link href="/practice" className="flex-1">
                   <Button
                     variant="outline"
-                    className="w-full bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                    className="w-full bg-gray-600 border-gray-600 text-white hover:bg-gray-600"
                   >
                     Practice Again
                   </Button>
@@ -167,10 +167,10 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
+    <div className="min-h-screen  bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex  gap-4 items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <Link href="/practice">
               <Button
@@ -185,35 +185,15 @@ export default function QuizPage() {
               <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
                 AI Practice Quiz
               </h1>
-              <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
+              <div className="flex  items-center  gap-4 mt-2 text-md text-gray-400">
                 <span>
                   Question {currentQuestion + 1} of {quizQuestions.length}
                 </span>
-                <Badge className="bg-gradient-to-r from-amber-400 to-amber-600 text-white border-0">
-                  {question?.topic}
-                </Badge>
-                <Badge
-                  className={`bg-gradient-to-r  ${
-                    question?.difficulty === "Easy" &&
-                    "from-green-400 to-green-600"
-                  }
-                        ${
-                          question?.difficulty === "Medium" &&
-                          "from-yellow-400 to-yellow-600"
-                        }
-                        ${
-                          question?.difficulty === "Hard" &&
-                          "from-red-400 to-red-600"
-                        }
-                         text-white border-0`}
-                >
-                  {question?.difficulty}
-                </Badge>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col border border-amber-500 p-2 rounded-lg items-center gap-4">
             <div className="flex items-center gap-2 text-sm">
               <Clock className="h-6 w-6 text-amber-400" />
               <Stopwatch
@@ -240,6 +220,29 @@ export default function QuizPage() {
         <Card className="mb-6 bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 shadow-xl">
           <CardHeader>
             <CardTitle className="text-lg leading-relaxed text-white">
+              <div className="flex  items-start  gap-4 ">
+                <Badge className="bg-gradient-to-r p-2 from-amber-400 to-amber-600 text-white border-0">
+                  {question?.topic}
+                </Badge>
+                <Badge
+                  className={`bg-gradient-to-r   ${
+                    question?.difficulty === "Easy" &&
+                    "from-green-400 to-green-600"
+                  }
+                        ${
+                          question?.difficulty === "Medium" &&
+                          "from-yellow-400 to-yellow-600"
+                        }
+                        ${
+                          question?.difficulty === "Hard" &&
+                          "from-red-400 to-red-600"
+                        }
+                         text-white p-2 border-0`}
+                >
+                  {question?.difficulty}
+                </Badge>
+              </div>
+              <hr className="border-gray-600 my-4" />
               {question?.question}
             </CardTitle>
           </CardHeader>
