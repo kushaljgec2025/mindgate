@@ -243,52 +243,44 @@ export default function QuizPage() {
               onValueChange={setSelectedAnswer}
             >
               <div className="space-y-3">
-                {question.options.map(
-                  (
-                    option: {
-                      option: string;
-                      isCorrect: boolean;
-                    },
-                    index: number
-                  ) => (
-                    <div
-                      key={index}
-                      className={`flex items-center space-x-3 p-3 rounded-lg border transition-colors ${
-                        showExplanation
-                          ? index === question.correct
-                            ? "bg-gradient-to-r from-green-600/20 to-emerald-600/20 border-green-500/50"
-                            : selectedAnswer === index.toString() &&
-                              index !== question.correct
-                            ? "bg-gradient-to-r from-red-600/20 to-pink-600/20 border-red-500/50"
-                            : "bg-gray-700/50 border-gray-600"
-                          : selectedAnswer === index.toString()
-                          ? "bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-500/50"
-                          : "hover:bg-gray-700/50 border-gray-600"
-                      }`}
+                {question.options.map((option: string, index: number) => (
+                  <div
+                    key={index}
+                    className={`flex items-center space-x-3 p-3 rounded-lg border transition-colors ${
+                      showExplanation
+                        ? index === question.correct
+                          ? "bg-gradient-to-r from-green-600/20 to-emerald-600/20 border-green-500/50"
+                          : selectedAnswer === index.toString() &&
+                            index !== question.correct
+                          ? "bg-gradient-to-r from-red-600/20 to-pink-600/20 border-red-500/50"
+                          : "bg-gray-700/50 border-gray-600"
+                        : selectedAnswer === index.toString()
+                        ? "bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-500/50"
+                        : "hover:bg-gray-700/50 border-gray-600"
+                    }`}
+                  >
+                    <RadioGroupItem
+                      value={index.toString()}
+                      id={`option-${index}`}
+                      disabled={showExplanation}
+                      className="text-white"
+                    />
+                    <Label
+                      htmlFor={`option-${index}`}
+                      className="flex-1 cursor-pointer text-white"
                     >
-                      <RadioGroupItem
-                        value={index.toString()}
-                        id={`option-${index}`}
-                        disabled={showExplanation}
-                        className="text-white"
-                      />
-                      <Label
-                        htmlFor={`option-${index}`}
-                        className="flex-1 cursor-pointer text-white"
-                      >
-                        {option}
-                      </Label>
-                      {showExplanation && index === question.correct && (
-                        <CheckCircle className="h-5 w-5 text-green-400" />
+                      {option}
+                    </Label>
+                    {showExplanation && index === question.correct && (
+                      <CheckCircle className="h-5 w-5 text-green-400" />
+                    )}
+                    {showExplanation &&
+                      selectedAnswer === index.toString() &&
+                      index !== question.correct && (
+                        <XCircle className="h-5 w-5 text-red-400" />
                       )}
-                      {showExplanation &&
-                        selectedAnswer === index.toString() &&
-                        index !== question.correct && (
-                          <XCircle className="h-5 w-5 text-red-400" />
-                        )}
-                    </div>
-                  )
-                )}
+                  </div>
+                ))}
               </div>
             </RadioGroup>
           </CardContent>
