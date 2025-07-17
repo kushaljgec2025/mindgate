@@ -110,7 +110,7 @@ export default function QuizPage() {
 
               <div className="space-y-2">
                 <p className="font-medium text-white">Performance Breakdown:</p>
-                {quizQuestions.map(
+                {quizQuestions?.map(
                   (
                     q: {
                       question: string;
@@ -193,20 +193,20 @@ export default function QuizPage() {
                 </Badge>
                 <Badge
                   className={`bg-gradient-to-r  ${
-                    question.difficulty === "Easy" &&
+                    question?.difficulty === "Easy" &&
                     "from-green-400 to-green-600"
                   }
                         ${
-                          question.difficulty === "Medium" &&
+                          question?.difficulty === "Medium" &&
                           "from-yellow-400 to-yellow-600"
                         }
                         ${
-                          question.difficulty === "Hard" &&
+                          question?.difficulty === "Hard" &&
                           "from-red-400 to-red-600"
                         }
                          text-white border-0`}
                 >
-                  {question.difficulty}
+                  {question?.difficulty}
                 </Badge>
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function QuizPage() {
         <Card className="mb-6 bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 shadow-xl">
           <CardHeader>
             <CardTitle className="text-lg leading-relaxed text-white">
-              {question.question}
+              {question?.question}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -253,10 +253,10 @@ export default function QuizPage() {
                     key={index}
                     className={`flex items-center space-x-3 p-3 rounded-lg border transition-colors ${
                       showExplanation
-                        ? index === question.correct
+                        ? index === question?.correct
                           ? "bg-gradient-to-r from-green-600/20 to-emerald-600/20 border-green-500/50"
                           : selectedAnswer === index.toString() &&
-                            index !== question.correct
+                            index !== question?.correct
                           ? "bg-gradient-to-r from-red-600/20 to-pink-600/20 border-red-500/50"
                           : "bg-gray-700/50 border-gray-600"
                         : selectedAnswer === index.toString()
@@ -276,12 +276,12 @@ export default function QuizPage() {
                     >
                       {option}
                     </Label>
-                    {showExplanation && index === question.correct && (
+                    {showExplanation && index === question?.correct && (
                       <CheckCircle className="h-5 w-5 text-green-400" />
                     )}
                     {showExplanation &&
                       selectedAnswer === index.toString() &&
-                      index !== question.correct && (
+                      index !== question?.correct && (
                         <XCircle className="h-5 w-5 text-red-400" />
                       )}
                   </div>
@@ -301,7 +301,7 @@ export default function QuizPage() {
                   <p className="font-medium text-amber-300 mb-2">
                     Explanation:
                   </p>
-                  <p className="text-amber-100">{question.explanation}</p>
+                  <p className="text-amber-100">{question?.explanation}</p>
                 </div>
               </div>
             </CardContent>
