@@ -67,20 +67,20 @@ export default function PracticePage() {
     };
 
     console.log("Generating questions...");
-    // try {
-    //   const response = await generateAIQuestions(config);
-    //   if (response) {
-    //     const jsonObject = JSON.parse(response);
-    //     setQuestions(jsonObject); // Update Zustand
-    //     router.push("practice/quiz"); // Navigate AFTER setting questions
-    //   }
-    // } catch (error) {
-    //   console.error("Error generating questions:", error);
-    // } finally {
-    //   setLoading(false);
-    // }
-    setQuestions(sampleQuestions);
-    router.push("practice/quiz");
+    try {
+      const response = await generateAIQuestions(config);
+      if (response) {
+        const jsonObject = JSON.parse(response);
+        setQuestions(jsonObject); // Update Zustand
+        router.push("practice/quiz"); // Navigate AFTER setting questions
+      }
+    } catch (error) {
+      console.error("Error generating questions:", error);
+    } finally {
+      setLoading(false);
+    }
+    // setQuestions(sampleQuestions);
+    // router.push("practice/quiz");
   };
 
   return (
