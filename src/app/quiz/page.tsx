@@ -1,5 +1,5 @@
 "use client";
-import useQuizZustandStore from "../../../app/store/quizZustandStore"; // ✅ Zustand import
+import useQuizZustandStore from "../store/quizZustandStore"; // ✅ Zustand import
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import Stopwatch from "./_components/Stopwatch";
+import Stopwatch from "../_components/Stopwatch";
 // {
 //     QuestionsDescription:
 //       "Consider the CIDR block 203.0.113.0/24. If this block is to be subnetted into 8 equal-sized subnets, what is the maximum number of usable host IP addresses in each of these new subnets?",

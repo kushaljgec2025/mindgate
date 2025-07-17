@@ -71,7 +71,7 @@ export default function PracticePage() {
       if (response) {
         const jsonObject = JSON.parse(response);
         setQuestions(jsonObject); // Update Zustand
-        router.push("practice/quiz"); // Navigate AFTER setting questions
+        router.push("/quiz"); // Navigate AFTER setting questions
       }
     } catch (error) {
       console.error("Error generating questions:", error);
