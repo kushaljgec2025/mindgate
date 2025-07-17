@@ -159,14 +159,11 @@ export default function QuizPage() {
   }
 
   const question = quizQuestions?.[currentQuestion];
-
-  {
-    (!quizQuestions || !question) && (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
-        <div className="text-white text-lg">Loading questions...</div>
-      </div>
-    )
-  }
+   {(!quizQuestions || !question) && (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="text-white text-lg">Loading questions...</div>
+  </div>
+)}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
