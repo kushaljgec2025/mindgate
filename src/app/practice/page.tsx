@@ -13,7 +13,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -23,7 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Play, Settings, Brain, Diff } from "lucide-react";
 import Link from "next/link";
 import useQuizZustandStore from "../../app/store/quizZustandStore";
-import { streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
+import { sampleQuestions, streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
 import { generateAIQuestions } from "../../../utils/AIModel";
 import Header from "../_components/Header/page";
 
@@ -34,7 +36,7 @@ export default function PracticePage() {
   const [questionCount, setQuestionCount] = useState([10]);
   const [loading, setLoading] = useState(false);
   // const [quizQuestions, setQuizQuestions] = useState([]);
- 
+
   const handleTopicToggle = (topic: string) => {
     setSelectedTopics((prev) =>
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
@@ -65,18 +67,20 @@ export default function PracticePage() {
     };
 
     console.log("Generating questions...");
-    try {
-      const response = await generateAIQuestions(config);
-      if (response) {
-        const jsonObject = JSON.parse(response);
-        setQuestions(jsonObject); // Update Zustand
-        router.push("practice/quiz"); // Navigate AFTER setting questions
-      }
-    } catch (error) {
-      console.error("Error generating questions:", error);
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   const response = await generateAIQuestions(config);
+    //   if (response) {
+    //     const jsonObject = JSON.parse(response);
+    //     setQuestions(jsonObject); // Update Zustand
+    //     router.push("practice/quiz"); // Navigate AFTER setting questions
+    //   }
+    // } catch (error) {
+    //   console.error("Error generating questions:", error);
+    // } finally {
+    //   setLoading(false);
+    // }
+    setQuestions(sampleQuestions);
+    router.push("practice/quiz");
   };
 
   return (
@@ -94,7 +98,7 @@ export default function PracticePage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
               AI Practice Session
             </h1>
             <p className="text-gray-300">Customize your practice session</p>
@@ -123,16 +127,18 @@ export default function PracticePage() {
                   <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                     <SelectValue placeholder="Choose your stream" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
-                    {streams.map((stream) => (
-                      <SelectItem
-                        key={stream}
-                        value={stream}
-                        className="text-white hover:bg-gray-700"
-                      >
-                        {stream}
-                      </SelectItem>
-                    ))}
+                  <SelectContent className="bg-gray-800  border-gray-700">
+                    <SelectGroup>
+                      {streams.map((stream) => (
+                        <SelectItem
+                          key={stream}
+                          value={stream}
+                          className="text-white "
+                        >
+                          {stream}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   </SelectContent>
                 </Select>
               </CardContent>
@@ -162,7 +168,7 @@ export default function PracticePage() {
                           onClick={() => handleTopicToggle(topic)}
                           className={
                             selectedTopics.includes(topic)
-                              ? "justify-start bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0"
+                              ? "justify-start bg-gradient-to-r from-amber-400 to-amber-600 text-white border-0"
                               : "justify-start bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
                           }
                         >
@@ -201,7 +207,15 @@ export default function PracticePage() {
                     <span>Hard</span>
                   </div>
                   <div className="text-center">
-                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0">
+                    <Badge
+                      className={`bg-gradient-to-r  text-white border-0
+                        ${difficulty[0] === 1 && "from-green-400 to-green-600"}
+                        ${
+                          difficulty[0] === 2 && "from-yellow-400 to-yellow-600"
+                        }
+                        ${difficulty[0] === 3 && "from-red-400 to-red-600"}
+                        `}
+                    >
                       {getDifficultyLabel(difficulty[0])}
                     </Badge>
                   </div>
@@ -214,7 +228,7 @@ export default function PracticePage() {
                     Number of Questions
                   </CardTitle>
                   <CardDescription className="text-gray-400">
-                    Set practice session length
+                    2 minutes per question is estimated
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -222,7 +236,7 @@ export default function PracticePage() {
                     <Slider
                       value={questionCount}
                       onValueChange={setQuestionCount}
-                      max={50}
+                      max={20}
                       min={5}
                       step={5}
                       className="w-full"
@@ -230,11 +244,12 @@ export default function PracticePage() {
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
                     <span>5</span>
-                    <span>25</span>
-                    <span>50</span>
+                    <span>10</span>
+                    <span>15</span>
+                    <span>20</span>
                   </div>
                   <div className="text-center">
-                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0">
+                    <Badge className="bg-gradient-to-r from-amber-400 to-amber-600 text-white border-0">
                       {questionCount[0]} Questions
                     </Badge>
                   </div>
@@ -288,7 +303,16 @@ export default function PracticePage() {
                   <p className="text-sm font-medium text-gray-300">
                     Difficulty
                   </p>
-                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0">
+                  <Badge
+                    className={`bg-gradient-to-r  ${
+                      difficulty[0] === 1 && "from-green-400 to-green-600"
+                    }
+                        ${
+                          difficulty[0] === 2 && "from-yellow-400 to-yellow-600"
+                        }
+                        ${difficulty[0] === 3 && "from-red-400 to-red-600"}
+                         text-white border-0`}
+                  >
                     {getDifficultyLabel(difficulty[0])}
                   </Badge>
                 </div>
@@ -316,7 +340,7 @@ export default function PracticePage() {
             </Card>
 
             <Button
-              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700"
+              className="w-full bg-gradient-to-r from-amber-400 to-amber-600 text-white hover:from-amber-400/90 hover:to-amber-600/90"
               disabled={
                 !selectedStream || selectedTopics.length === 0 || loading
               }

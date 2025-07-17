@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 
 interface StopwatchProps {
@@ -38,8 +39,12 @@ export default function Stopwatch({
   };
 
   return (
-    <span className={timeLeft < 60 ? "text-red-400 font-bold" : "text-gray-400"}>
+    <Badge
+      className={`${
+        timeLeft < 60 ? "text-red-400 font-bold" : "text-gray-400"
+      } text-lg`}
+    >
       {formatTime(timeLeft)}
-    </span>
+    </Badge>
   );
 }

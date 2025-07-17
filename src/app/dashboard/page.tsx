@@ -13,6 +13,26 @@ import { Badge } from "@/components/ui/badge";
 import { BookOpen, Brain, Trophy, Target, Clock, Zap } from "lucide-react";
 import Link from "next/link";
 import Header from "../_components/Header/page";
+const recentActivities = [
+  {
+    title: "Data Structures - Trees",
+    description: "Completed 15 questions • 87% accuracy",
+    badge: "Computer Science",
+    badgeGradient: "from-blue-400 to-blue-600",
+  },
+  {
+    title: "Digital Logic Design",
+    description: "Completed 20 questions • 92% accuracy",
+    badge: "Electronics",
+    badgeGradient: "from-pink-400 to-pink-600",
+  },
+  {
+    title: "GATE 2023 - Set 1",
+    description: "Previous year paper • 78% score",
+    badge: "Previous Year",
+    badgeGradient: "from-orange-500 to-red-600",
+  },
+];
 
 export default function Dashboard() {
   const [stats] = useState({
@@ -29,7 +49,7 @@ export default function Dashboard() {
       <Header />
       <div className="max-w-6xl mt-4 mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-red-200 to-orange-500 bg-clip-text text-transparent mb-2">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-amber-400  to-amber-600 bg-clip-text text-transparent mb-2">
             MindGATE
           </h1>
           <p className="text-lg text-gray-300">
@@ -38,8 +58,9 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
+        {/* Questions Attempted*/}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 border-blue-500/20 text-white shadow-xl">
+          <Card className="bg-gradient-to-br from-blue-400 to-blue-700  border-blue-400 text-white shadow-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -52,8 +73,8 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
-
-          <Card className="bg-gradient-to-br from-emerald-600 via-green-700 to-teal-800 border-green-500/20 text-white shadow-xl">
+          {/*Accuracy */}
+          <Card className="bg-gradient-to-br from-green-400  to-green-800 border-green-400 text-white shadow-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -64,20 +85,22 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
+          {/* Total Test Attempted*/}
 
-          <Card className="bg-gradient-to-br from-orange-600 via-red-600 to-pink-700 border-orange-500/20 text-white shadow-xl">
+          <Card className="bg-gradient-to-br from-orange-400  to-orange-700 border-orange-500 text-white shadow-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-orange-100">Current Streak</p>
+                  <p className="text-orange-100">Test Attempted</p>
                   <p className="text-2xl font-bold">{stats.streak}</p>
                 </div>
                 <Zap className="h-8 w-8 text-orange-200" />
               </div>
             </CardContent>
           </Card>
+          {/* Global Rank */}
 
-          <Card className="bg-gradient-to-br from-purple-600 via-violet-700 to-indigo-800 border-purple-500/20 text-white shadow-xl">
+          <Card className="bg-gradient-to-br from-purple-400  to-purple-800 border-purple-500 text-white shadow-xl">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -92,10 +115,10 @@ export default function Dashboard() {
 
         {/* Main Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 cursor-pointer group">
+          <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 hover:shadow-lg hover:shadow-amber-400/20 transition-all duration-300 cursor-pointer group">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg group-hover:scale-110 transition-transform">
+                <div className="p-2 bg-gradient-to-r from-amber-400 to-amber-600 rounded-lg group-hover:scale-110 transition-transform">
                   <Brain className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -115,19 +138,20 @@ export default function Dashboard() {
                 engineering stream.
               </p>
               <Link href="/practice">
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0">
+                <Button className="w-full bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-400/90 hover:to-amber-600/90 text-white border-0">
                   Start AI Practice
                 </Button>
               </Link>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-300 cursor-pointer group">
+          <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 hover:shadow-lg hover:shadow-blue-400/20 transition-all duration-300 cursor-pointer group">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg group-hover:scale-110 transition-transform">
+                <div className="p-2 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg group-hover:scale-110 transition-transform">
                   <BookOpen className="h-6 w-6 text-white" />
                 </div>
+
                 <div>
                   <CardTitle className="text-white">
                     Previous Year Papers
@@ -136,6 +160,9 @@ export default function Dashboard() {
                     Practice with real GATE questions
                   </CardDescription>
                 </div>
+                <Badge className="bg-orange-500 p-2 text-white">
+                  Coming Soon
+                </Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -143,8 +170,11 @@ export default function Dashboard() {
                 Access and practice with authentic GATE questions from previous
                 years, organized by year and engineering stream.
               </p>
-              <Link href="/previous-papers">
-                <Button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0">
+              <Link href={"/practice"}>
+                <Button
+                  disabled
+                  className="w-full bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-400/90 hover:to-blue-600/90 text-white border-0"
+                >
                   Browse Papers
                 </Button>
               </Link>
@@ -162,41 +192,24 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-600/50">
-                <div>
-                  <p className="font-medium text-white">
-                    Data Structures - Trees
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    Completed 15 questions • 87% accuracy
-                  </p>
+              {recentActivities.map((activity, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg border border-gray-600"
+                >
+                  <div>
+                    <p className="font-medium text-white">{activity.title}</p>
+                    <p className="text-sm text-gray-300">
+                      {activity.description}
+                    </p>
+                  </div>
+                  <Badge
+                    className={`bg-gradient-to-r ${activity.badgeGradient} text-white border-0`}
+                  >
+                    {activity.badge}
+                  </Badge>
                 </div>
-                <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0">
-                  Computer Science
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-600/50">
-                <div>
-                  <p className="font-medium text-white">Digital Logic Design</p>
-                  <p className="text-sm text-gray-300">
-                    Completed 20 questions • 92% accuracy
-                  </p>
-                </div>
-                <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0">
-                  Electronics
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-600/50">
-                <div>
-                  <p className="font-medium text-white">GATE 2023 - Set 1</p>
-                  <p className="text-sm text-gray-300">
-                    Previous year paper • 78% score
-                  </p>
-                </div>
-                <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white border-0">
-                  Previous Year
-                </Badge>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>

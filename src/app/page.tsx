@@ -128,14 +128,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       {/* Navigation */}
-      <nav className="border-b border-gray-600/50 bg-black/80 backdrop-blur-sm sticky top-0 z-50 rounded-b-lg ">
+      <nav className="border-b  border-gray-800 bg-black/80 backdrop-blur-sm sticky top-0 z-50 rounded-b-lg ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-200 to-amber-600 rounded-lg flex items-center justify-center">
+            <div className="flex md:flex-row flex-col  items-center md:gap-2 gap-1 ">
+              <div className="w-8 h-8 bg-gradient-to-r from-amber-200 to-amber-600 rounded-lg flex items-center justify-center">
                 <Brain className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-zinc-200 to-amber-600  bg-clip-text text-transparent">
+              <span className="md:text-xl text-sm font-bold bg-gradient-to-r from-zinc-200 to-amber-600  bg-clip-text text-transparent">
                 MindGATE
               </span>
             </div>
@@ -332,7 +332,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-4">
+      {/* <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -381,10 +381,10 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-600/10 to-purple-600/10">
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600/10 to-zinc-600/10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-white mb-6">
             Ready to Ace Your GATE Exam?
@@ -400,15 +400,13 @@ export default function LandingPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400"
             />
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 whitespace-nowrap">
+            <Button className="bg-gradient-to-r from-amber-400  to-amber-600 hover:from-amber-400/90 hover:to-amber-600/90  text-white border-0 whitespace-nowrap">
               Get Started
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
 
-          <p className="text-sm text-gray-400">
-            Free forever. No credit card required.
-          </p>
+          <p className="text-sm text-gray-400">Free for now.</p>
         </div>
       </section>
 
@@ -418,11 +416,11 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-amber-200 to-amber-600  rounded-lg flex items-center justify-center">
                   <Brain className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  GATE Prep Master
+                <span className="text-xl font-bold bg-gradient-to-r from-zinc-200 to-amber-600 bg-clip-text text-transparent">
+                  MindGATE
                 </span>
               </div>
               <p className="text-gray-400 text-sm">
@@ -448,13 +446,15 @@ export default function LandingPage() {
                 <li>Electronics & Communication</li>
                 <li>Electrical Engineering</li>
                 <li>Mechanical Engineering</li>
+                <li>Civil Engineering</li>
+                <li>Instrumentation Engineering</li>
+                <li>Chemical Engineering</li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-white font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li>Help Center</li>
                 <li>Contact Us</li>
                 <li>Privacy Policy</li>
                 <li>Terms of Service</li>
@@ -463,7 +463,7 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 GATE Prep Master. All rights reserved.</p>
+            <p>&copy; 2025 MindGATE. All rights reserved.</p>
           </div>
         </div>
       </footer>

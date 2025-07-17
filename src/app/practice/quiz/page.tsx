@@ -15,9 +15,10 @@ import {
   XCircle,
   Lightbulb,
   Trophy,
+  BadgeCent,
 } from "lucide-react";
 import Link from "next/link";
-import { questions } from "@/app/(data)/staticData";
+import { sampleQuestions } from "@/app/(data)/staticData";
 import Stopwatch from "./_components/Stopwatch";
 // {
 //     QuestionsDescription:
@@ -97,11 +98,11 @@ export default function QuizPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gradient-to-r from-green-600 to-emerald-700 rounded-lg">
+                <div className="p-4 bg-gradient-to-r from-green-400 to-green-600 rounded-lg">
                   <p className="text-2xl font-bold text-white">{score}</p>
                   <p className="text-sm text-green-100">Correct Answers</p>
                 </div>
-                <div className="p-4 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg">
+                <div className="p-4 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg">
                   <p className="text-2xl font-bold text-white">
                     {Math.round((score / quizQuestions.length) * 100)}%
                   </p>
@@ -121,7 +122,7 @@ export default function QuizPage() {
                       <CheckCircle className="h-4 w-4 text-green-400" />
                     ) : (
                       <XCircle className="h-4 w-4 text-red-400" />
-                    )}
+                    )}+
                   </div>
                 ))}
               </div>
@@ -136,7 +137,7 @@ export default function QuizPage() {
                   </Button>
                 </Link>
                 <Link href="/dashboard" className="flex-1">
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0">
+                  <Button className="w-full bg-gradient-to-r from-amber-400 to-amber-600 text-white border-0">
                     Back to Dashboard
                   </Button>
                 </Link>
@@ -166,17 +167,31 @@ export default function QuizPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
                 AI Practice Quiz
               </h1>
-              <div className="flex items-center gap-4 text-sm text-gray-400">
+              <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
                 <span>
                   Question {currentQuestion + 1} of {quizQuestions.length}
                 </span>
-                <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0">
+                <Badge className="bg-gradient-to-r from-amber-400 to-amber-600 text-white border-0">
                   {question.topic}
                 </Badge>
-                <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0">
+                <Badge
+                  className={`bg-gradient-to-r  ${
+                    question.difficulty === "Easy" &&
+                    "from-green-400 to-green-600"
+                  }
+                        ${
+                          question.difficulty === "Medium" &&
+                          "from-yellow-400 to-yellow-600"
+                        }
+                        ${
+                          question.difficulty === "Hard" &&
+                          "from-red-400 to-red-600"
+                        }
+                         text-white border-0`}
+                >
                   {question.difficulty}
                 </Badge>
               </div>
@@ -185,7 +200,7 @@ export default function QuizPage() {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm">
-              <Clock className="h-4 w-4 text-gray-400" />
+              <Clock className="h-6 w-6 text-amber-400" />
               <Stopwatch
                 initialTime={300}
                 isRunning={!showResult}
@@ -195,9 +210,9 @@ export default function QuizPage() {
                 }}
               />
             </div>
-            <div className="text-sm text-gray-400">
+            <Badge className="text-sm text-bold  text-amber-500">
               Score: {score}/{currentQuestion + (showExplanation ? 1 : 0)}
-            </div>
+            </Badge>
           </div>
         </div>
 
@@ -231,7 +246,7 @@ export default function QuizPage() {
                           ? "bg-gradient-to-r from-red-600/20 to-pink-600/20 border-red-500/50"
                           : "bg-gray-700/50 border-gray-600"
                         : selectedAnswer === index.toString()
-                        ? "bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border-blue-500/50"
+                        ? "bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-500/50"
                         : "hover:bg-gray-700/50 border-gray-600"
                     }`}
                   >
@@ -264,13 +279,15 @@ export default function QuizPage() {
 
         {/* Explanation */}
         {showExplanation && (
-          <Card className="mb-6 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 border-blue-500/30 shadow-xl">
+          <Card className="mb-6 bg-gradient-to-r from-amber-600/10 to-yellow-600/10 border-amber-500/30 shadow-xl">
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
-                <Lightbulb className="h-5 w-5 text-blue-400 mt-0.5" />
+                <Lightbulb className="h-8 w-8 text-amber-400 mt-0.5" />
                 <div>
-                  <p className="font-medium text-blue-300 mb-2">Explanation:</p>
-                  <p className="text-blue-100">{question.explanation}</p>
+                  <p className="font-medium text-amber-300 mb-2">
+                    Explanation:
+                  </p>
+                  <p className="text-amber-100">{question.explanation}</p>
                 </div>
               </div>
             </CardContent>
@@ -291,14 +308,14 @@ export default function QuizPage() {
             <Button
               onClick={handleAnswerSubmit}
               disabled={!selectedAnswer}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0"
+              className="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-400/90 hover:to-amber-600/90 text-white border-0"
             >
               Submit Answer
             </Button>
           ) : (
             <Button
               onClick={handleNext}
-              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0"
+              className="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-400/90 hover:to-amber-600/90 text-white border-0"
             >
               {currentQuestion === quizQuestions.length - 1
                 ? "Finish Quiz"
