@@ -124,7 +124,7 @@ export default function QuizPage() {
                       key={index}
                       className="flex items-center justify-between p-2 bg-gray-700/50 rounded border border-gray-600"
                     >
-                      <span className="text-sm text-gray-300">{q.topic}</span>
+                      <span className="text-sm text-gray-300">{q?.topic}</span>
                       {answers[index] === q.correct ? (
                         <CheckCircle className="h-4 w-4 text-green-400" />
                       ) : (
@@ -159,7 +159,13 @@ export default function QuizPage() {
   }
 
   const question = quizQuestions[currentQuestion];
-
+  {
+    !question && (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
+        <div className="text-white text-lg">Loading questions...</div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
       <div className="max-w-4xl mx-auto">
@@ -184,7 +190,7 @@ export default function QuizPage() {
                   Question {currentQuestion + 1} of {quizQuestions.length}
                 </span>
                 <Badge className="bg-gradient-to-r from-amber-400 to-amber-600 text-white border-0">
-                  {question.topic}
+                  {question?.topic}
                 </Badge>
                 <Badge
                   className={`bg-gradient-to-r  ${
