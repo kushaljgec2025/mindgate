@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,18 +14,18 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Play, Settings, Brain, Diff } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { ArrowLeft, Brain, Settings } from "lucide-react";
 import Link from "next/link";
-import useQuizZustandStore from "../../app/store/quizZustandStore";
-import { sampleQuestions, streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
 import { generateAIQuestions } from "../../../utils/AIModel";
+import useQuizZustandStore from "../../app/store/quizZustandStore";
 import Header from "../_components/Header/page";
 
 export default function PracticePage() {

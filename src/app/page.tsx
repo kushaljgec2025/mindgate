@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { sampleQuestions } from "./(data)/staticData";
+import { useState } from "react";
 import { toast } from "sonner";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -12,24 +12,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
-  Brain,
-  Trophy,
-  Target,
-  BookOpen,
-  Users,
-  Star,
   ArrowRight,
+  BookOpen,
+  Brain,
+  Clock,
   Play,
   Sparkles,
+  Star,
+  Target,
   TrendingUp,
-  Clock,
+  Trophy,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
-import useQuizZustandStore from "./store/quizZustandStore";
-import { useRouter } from "next/navigation";
 
 const features = [
   {
@@ -82,32 +79,32 @@ const features = [
   },
 ];
 
-const testimonials = [
-  {
-    name: "Arjun Sharma DEMO",
-    role: "GATE CS 2023 - AIR 45",
-    content:
-      "GATE Prep Master's AI questions helped me identify my weak areas. The personalized practice sessions were game-changing!",
-    rating: 5,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    name: "Priya Patel DEMO",
-    role: "GATE ECE 2023 - AIR 78",
-    content:
-      "The previous year papers section is incredibly well-organized. I could practice systematically and track my improvement.",
-    rating: 5,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    name: "Rahul Kumar DEMO",
-    role: "GATE ME 2023 - AIR 156",
-    content:
-      "The gamified interface kept me motivated throughout my preparation. The streak system really works!",
-    rating: 5,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-];
+// const testimonials = [
+//   {
+//     name: "Arjun Sharma DEMO",
+//     role: "GATE CS 2023 - AIR 45",
+//     content:
+//       "GATE Prep Master's AI questions helped me identify my weak areas. The personalized practice sessions were game-changing!",
+//     rating: 5,
+//     avatar: "/placeholder.svg?height=40&width=40",
+//   },
+//   {
+//     name: "Priya Patel DEMO",
+//     role: "GATE ECE 2023 - AIR 78",
+//     content:
+//       "The previous year papers section is incredibly well-organized. I could practice systematically and track my improvement.",
+//     rating: 5,
+//     avatar: "/placeholder.svg?height=40&width=40",
+//   },
+//   {
+//     name: "Rahul Kumar DEMO",
+//     role: "GATE ME 2023 - AIR 156",
+//     content:
+//       "The gamified interface kept me motivated throughout my preparation. The streak system really works!",
+//     rating: 5,
+//     avatar: "/placeholder.svg?height=40&width=40",
+//   },
+// ];
 const showToast = (title: string, type: "success" | "error") => {
   const toastFn = type === "error" ? toast.error : toast.success;
   toastFn(title, {

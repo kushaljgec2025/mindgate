@@ -13,7 +13,7 @@ import {
   Clock,
   Lightbulb,
   Trophy,
-  XCircle
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -52,7 +52,7 @@ export default function QuizPage() {
 
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [QuestionSet, setQuestionSet] = useState([]);
+  // const [QuestionSet, setQuestionSet] = useState([]);
   const quizQuestions = useQuizZustandStore((state) => state.QuizQuestions);
   console.log("Quiz Questions:", quizQuestions);
 
@@ -110,19 +110,30 @@ export default function QuizPage() {
 
               <div className="space-y-2">
                 <p className="font-medium text-white">Performance Breakdown:</p>
-                {quizQuestions.map((q: any, index: any) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-2 bg-gray-700/50 rounded border border-gray-600"
-                  >
-                    <span className="text-sm text-gray-300">{q.topic}</span>
-                    {answers[index] === q.correct ? (
-                      <CheckCircle className="h-4 w-4 text-green-400" />
-                    ) : (
-                      <XCircle className="h-4 w-4 text-red-400" />
-                    )}+
-                  </div>
-                ))}
+                {quizQuestions.map(
+                  (
+                    q: {
+                      question: string;
+                      options: string[];
+                      correct: number;
+                      topic: string;
+                    },
+                    index: number
+                  ) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-gray-700/50 rounded border border-gray-600"
+                    >
+                      <span className="text-sm text-gray-300">{q.topic}</span>
+                      {answers[index] === q.correct ? (
+                        <CheckCircle className="h-4 w-4 text-green-400" />
+                      ) : (
+                        <XCircle className="h-4 w-4 text-red-400" />
+                      )}
+                      +
+                    </div>
+                  )
+                )}
               </div>
 
               <div className="flex gap-4">
@@ -232,44 +243,52 @@ export default function QuizPage() {
               onValueChange={setSelectedAnswer}
             >
               <div className="space-y-3">
-                {question.options.map((option: any, index: any) => (
-                  <div
-                    key={index}
-                    className={`flex items-center space-x-3 p-3 rounded-lg border transition-colors ${
-                      showExplanation
-                        ? index === question.correct
-                          ? "bg-gradient-to-r from-green-600/20 to-emerald-600/20 border-green-500/50"
-                          : selectedAnswer === index.toString() &&
-                            index !== question.correct
-                          ? "bg-gradient-to-r from-red-600/20 to-pink-600/20 border-red-500/50"
-                          : "bg-gray-700/50 border-gray-600"
-                        : selectedAnswer === index.toString()
-                        ? "bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-500/50"
-                        : "hover:bg-gray-700/50 border-gray-600"
-                    }`}
-                  >
-                    <RadioGroupItem
-                      value={index.toString()}
-                      id={`option-${index}`}
-                      disabled={showExplanation}
-                      className="text-white"
-                    />
-                    <Label
-                      htmlFor={`option-${index}`}
-                      className="flex-1 cursor-pointer text-white"
+                {question.options.map(
+                  (
+                    option: {
+                      option: string;
+                      isCorrect: boolean;
+                    },
+                    index: number
+                  ) => (
+                    <div
+                      key={index}
+                      className={`flex items-center space-x-3 p-3 rounded-lg border transition-colors ${
+                        showExplanation
+                          ? index === question.correct
+                            ? "bg-gradient-to-r from-green-600/20 to-emerald-600/20 border-green-500/50"
+                            : selectedAnswer === index.toString() &&
+                              index !== question.correct
+                            ? "bg-gradient-to-r from-red-600/20 to-pink-600/20 border-red-500/50"
+                            : "bg-gray-700/50 border-gray-600"
+                          : selectedAnswer === index.toString()
+                          ? "bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-500/50"
+                          : "hover:bg-gray-700/50 border-gray-600"
+                      }`}
                     >
-                      {option}
-                    </Label>
-                    {showExplanation && index === question.correct && (
-                      <CheckCircle className="h-5 w-5 text-green-400" />
-                    )}
-                    {showExplanation &&
-                      selectedAnswer === index.toString() &&
-                      index !== question.correct && (
-                        <XCircle className="h-5 w-5 text-red-400" />
+                      <RadioGroupItem
+                        value={index.toString()}
+                        id={`option-${index}`}
+                        disabled={showExplanation}
+                        className="text-white"
+                      />
+                      <Label
+                        htmlFor={`option-${index}`}
+                        className="flex-1 cursor-pointer text-white"
+                      >
+                        {option}
+                      </Label>
+                      {showExplanation && index === question.correct && (
+                        <CheckCircle className="h-5 w-5 text-green-400" />
                       )}
-                  </div>
-                ))}
+                      {showExplanation &&
+                        selectedAnswer === index.toString() &&
+                        index !== question.correct && (
+                          <XCircle className="h-5 w-5 text-red-400" />
+                        )}
+                    </div>
+                  )
+                )}
               </div>
             </RadioGroup>
           </CardContent>
