@@ -1,24 +1,22 @@
 "use client";
 import useQuizZustandStore from "../../../app/store/quizZustandStore"; // ✅ Zustand import
 
-import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   ArrowLeft,
-  Clock,
   CheckCircle,
-  XCircle,
+  Clock,
   Lightbulb,
   Trophy,
-  BadgeCent,
+  XCircle
 } from "lucide-react";
 import Link from "next/link";
-import { sampleQuestions } from "@/app/(data)/staticData";
+import { useState } from "react";
 import Stopwatch from "./_components/Stopwatch";
 // {
 //     QuestionsDescription:

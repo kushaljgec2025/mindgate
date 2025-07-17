@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 import { Brain } from "lucide-react";
-import Link from "next/link";
-import React from "react";
+
 
 export default function Header() {
   return (
