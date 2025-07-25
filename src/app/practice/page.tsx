@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -39,6 +40,7 @@ export default function PracticePage() {
 
   const handleTopicToggle = (topic: string) => {
     setSelectedTopics((prev) =>
+      // if the topic is already icluded then remove it from the list  and if its not in the list then add it to the list
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
     );
   };
@@ -65,22 +67,28 @@ export default function PracticePage() {
       difficulty: getDifficultyLabel(difficulty[0]),
       questionCount: questionCount[0],
     };
-
+    const showToast = (title: string, type: "success" | "error") => {
+      const toastFn = type === "error" ? toast.error : toast.success;
+      toastFn(title, {
+        duration: 2000,
+      });
+    };
     console.log("Generating questions...");
-    // try {
-    //   const response = await generateAIQuestions(config);
-    //   if (response) {
-    //     const jsonObject = JSON.parse(response);
-    //     setQuestions(jsonObject); // Update Zustand
-    //     router.push("/quiz"); // Navigate AFTER setting questions
-    //   }
-    // } catch (error) {
-    //   console.error("Error generating questions:", error);
-    // } finally {
-    //   setLoading(false);
-    // }
-    setQuestions(sampleQuestions);
-    router.push("/quiz");
+    try {
+      const response = await generateAIQuestions(config);
+      if (response) {
+        const jsonObject = JSON.parse(response);
+        setQuestions(jsonObject); // Update Zustand
+        router.push("/quiz"); // Navigate AFTER setting questions
+      }
+    } catch (error) {
+      console.error("Error generating questions:", error);
+    } finally {
+      showToast("Questions generated successfully!", "success");
+      setLoading(false);
+    }
+    // setQuestions(sampleQuestions);
+    // router.push("/quiz");
   };
 
   return (
@@ -124,7 +132,7 @@ export default function PracticePage() {
                   value={selectedStream}
                   onValueChange={setSelectedStream}
                 >
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-amber-400/50">
                     <SelectValue placeholder="Choose your stream" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800  border-gray-700">
@@ -183,6 +191,7 @@ export default function PracticePage() {
 
             {/* Difficulty & Question Count */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/*select difficulty and question count*/}
               <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-white">Difficulty Level</CardTitle>
@@ -221,7 +230,7 @@ export default function PracticePage() {
                   </div>
                 </CardContent>
               </Card>
-
+              {/*select Question count and question count*/}
               <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-white">
@@ -346,7 +355,14 @@ export default function PracticePage() {
               }
               onClick={generateQuestions}
             >
-              {loading ? "Generating..." : "Start Practice Session"}
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Generating...
+                </div>
+              ) : (
+                "Start Practice Session"
+              )}
             </Button>
           </div>
         </div>

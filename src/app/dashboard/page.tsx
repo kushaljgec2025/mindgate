@@ -170,7 +170,7 @@ export default function Dashboard() {
                 Access and practice with authentic GATE questions from previous
                 years, organized by year and engineering stream.
               </p>
-              <Link href={"/practice"}>
+              <Link href={"/dashboard"}>
                 <Button
                   disabled
                   className="w-full bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-400/90 hover:to-blue-600/90 text-white border-0"

@@ -1,7 +1,11 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 //Protected Routes
 // This middleware will protect all routes except that match the provided patterns
-const isPrivateRoute = createRouteMatcher(["/dasboard(.*)"]);
+const isPrivateRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/practice(.*)",
+  "/quiz(.*)",
+]);
 
 // This middleware will run for all requests, protecting the specified routes
 // and allowing public access to others.
