@@ -132,7 +132,7 @@ export default function PracticePage() {
                   value={selectedStream}
                   onValueChange={setSelectedStream}
                 >
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-amber-400/50">
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                     <SelectValue placeholder="Choose your stream" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800  border-gray-700">
@@ -349,7 +349,9 @@ export default function PracticePage() {
             </Card>
 
             <Button
-              className="w-full bg-gradient-to-r from-amber-400 to-amber-600 text-white hover:from-amber-400/90 hover:to-amber-600/90"
+              className={`w-full bg-gradient-to-r from-amber-400 to-amber-600 text-white hover:from-amber-400/90 hover:to-amber-600/90 ${
+                loading ? "animate-pulse" : ""
+              }`}
               disabled={
                 !selectedStream || selectedTopics.length === 0 || loading
               }
