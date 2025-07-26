@@ -57,8 +57,7 @@ export default function PracticePage() {
         return "Medium";
     }
   };
-  
-  
+
   const setQuestions = useZustandStore((state) => state.setQuizQuestions);
   const router = useRouter();
   const generateQuestions = async () => {

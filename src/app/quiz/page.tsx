@@ -1,5 +1,5 @@
 "use client";
-import useZustandStore from "../store/quizZustandStore"; // ✅ Zustand import
+import useZustandStore from "../store/quizZustandStore";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,47 +16,39 @@ import {
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Stopwatch from "../_components/Stopwatch";
 import appwriteServices from "@/appwrite/config";
 
-import { stat } from "fs";
-// {
-//     QuestionsDescription:
-//       "Consider the CIDR block 203.0.113.0/24. If this block is to be subnetted into 8 equal-sized subnets, what is the maximum number of usable host IP addresses in each of these new subnets?",
-//     Options: [
-//       {
-//         isCorrect: false,
-//         option: "A: 28",
-//       },
-//       {
-//         isCorrect: true,
-//         option: "B: 30",
-//       },
-//       {
-//         isCorrect: false,
-//         option: "C: 14",
-//       },
-//       {
-//         isCorrect: false,
-//         option: "D: 126",
-//       },
-//     ],
-//     Explanation:
-//       "To create 8 equal-sized subnets from a /24 network, we need 3 bits for subnetting (since 2^3 = 8). These 3 bits are borrowed from the host portion. The original network mask is 24 bits. So, the new subnet mask will be 24 + 3 = 27 bits (i.e., /27). In a /27 subnet, the total number of IP addresses is 2^(32-27) = 2^5 = 32. The number of usable host IP addresses in each subnet is total addresses - 2 (one for the network address and one for the broadcast address). Therefore, 32 - 2 = 30 usable host IP addresses.",
-//     Difficulty: "Medium",
-//   },
+type Question = {
+  question: string;
+  options: string[];
+  correct: number;
+  topic: string;
+  explanation: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+};
+
+type UserStats = {
+  userid: string;
+  question_attempted: number;
+  question_corrected: number;
+  test_attempted: number;
+  global_rank: number;
+};
 
 export default function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [answers, setAnswers] = useState<number[]>([]);
   const [showResult, setShowResult] = useState(false);
-
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
-  // const [QuestionSet, setQuestionSet] = useState([]);
-  const quizQuestions = useZustandStore((state) => state.QuizQuestions);
+
+  const quizQuestions: Question[] = useZustandStore(
+    (state) => state.QuizQuestions
+  );
+  const userDetails = useZustandStore((state) => state.userDetails);
 
   const handleAnswerSubmit = () => {
     const answerIndex = Number.parseInt(selectedAnswer);
@@ -65,34 +57,22 @@ export default function QuizPage() {
     setAnswers(newAnswers);
 
     if (answerIndex === quizQuestions[currentQuestion].correct) {
-      setScore(score + 1);
+      setScore((prev) => prev + 1);
     }
 
     setShowExplanation(true);
   };
-  const userDetails = useZustandStore((state) => state.userDetails);
-  type UserStats = {
-    userid: string;
-    question_attempted: number;
-    question_corrected: number;
-    test_attempted: number;
-    global_rank: number;
-  };
-  const update_user_stats = async (stats: UserStats) => {
-    try {
-      let existingStats = null;
 
-      try {
-        existingStats = await appwriteServices.getUserStats(stats.userid);
-      } catch (err: any) {
-        if (err.code === 404) {
-          // No existing stats — this is fine
-          console.log("No existing user stats found, will create new entry.");
-        } else {
-          // Unexpected error
+  const update_user_stats = async (stats: UserStats) => {
+    if (!stats.userid) return console.warn("No user ID found.");
+
+    try {
+      const existingStats = await appwriteServices
+        .getUserStats(stats.userid)
+        .catch((err) => {
+          if (err.code === 404) return null;
           throw err;
-        }
-      }
+        });
 
       if (existingStats) {
         stats.question_attempted += existingStats.question_attempted || 0;
@@ -100,20 +80,15 @@ export default function QuizPage() {
         stats.test_attempted = (existingStats.test_attempted || 0) + 1;
         stats.global_rank = existingStats.global_rank;
       } else {
-        stats.test_attempted = 1; // first test
+        stats.test_attempted = 1;
       }
 
-      await appwriteServices.createUserStats({
-        userid: userDetails?.id,
-        question_attempted: stats.question_attempted,
-        question_corrected: stats.question_corrected,
-        test_attempted: stats.test_attempted,
-        global_rank: stats.global_rank,
-      });
-    } catch (error: any) {
+      await appwriteServices.createUserStats(stats);
+    } catch (error) {
       console.error("Error updating user stats:", error);
     }
   };
+
   const handleNext = () => {
     if (currentQuestion < quizQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -121,17 +96,28 @@ export default function QuizPage() {
       setShowExplanation(false);
     } else {
       setShowResult(true);
+
       update_user_stats({
-        userid: userDetails?.id,
+        userid: userDetails?.id || "",
         question_attempted: quizQuestions.length,
         question_corrected: score,
-        test_attempted: 1, // Assuming this is the first test attempt
-        global_rank: 5, // Placeholder for global rank
+        test_attempted: 1,
+        global_rank: 5, // Placeholder for now
       });
     }
   };
 
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+
+  const question = quizQuestions?.[currentQuestion];
+
+  if (!quizQuestions || quizQuestions.length === 0 || !question) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
+        <div className="text-white text-lg">Loading questions...</div>
+      </div>
+    );
+  }
 
   if (showResult) {
     return (
@@ -143,7 +129,7 @@ export default function QuizPage() {
                 <Trophy className="h-8 w-8 text-white" />
               </div>
               <CardTitle className="text-2xl text-white">
-                Quiz Completed !
+                Quiz Completed!
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -162,36 +148,26 @@ export default function QuizPage() {
 
               <div className="space-y-2">
                 <p className="font-medium text-white">Performance Breakdown:</p>
-                {quizQuestions?.map(
-                  (
-                    q: {
-                      question: string;
-                      options: string[];
-                      correct: number;
-                      topic: string;
-                    },
-                    index: number
-                  ) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-2 bg-gray-700/50 rounded border border-gray-600"
-                    >
-                      <span className="text-sm text-gray-300">{q?.topic}</span>
-                      {answers[index] === q.correct ? (
-                        <CheckCircle className="h-4 w-4 text-green-400" />
-                      ) : (
-                        <XCircle className="h-4 w-4 text-red-400" />
-                      )}
-                    </div>
-                  )
-                )}
+                {quizQuestions.map((q, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-2 bg-gray-700/50 rounded border border-gray-600"
+                  >
+                    <span className="text-sm text-gray-300">{q.topic}</span>
+                    {answers[index] === q.correct ? (
+                      <CheckCircle className="h-4 w-4 text-green-400" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-red-400" />
+                    )}
+                  </div>
+                ))}
               </div>
 
               <div className="flex flex-wrap gap-4">
                 <Link href="/practice" className="flex-1">
                   <Button
                     variant="outline"
-                    className="w-full bg-gray-600 border-gray-600 text-white hover:bg-gray-600"
+                    className="w-full bg-gray-600 border-gray-600 text-white"
                   >
                     Practice Again
                   </Button>
@@ -209,20 +185,11 @@ export default function QuizPage() {
     );
   }
 
-  const question = quizQuestions?.[currentQuestion];
-  {
-    (!quizQuestions || !question) && (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
-        <div className="text-white text-lg">Loading questions...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen  bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex  gap-4 items-center justify-between mb-6">
+        <div className="flex gap-4 items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <Link href="/practice">
               <Button
@@ -237,7 +204,7 @@ export default function QuizPage() {
               <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
                 AI Practice Quiz
               </h1>
-              <div className="flex  items-center  gap-4 mt-2 text-md text-gray-400">
+              <div className="flex items-center gap-4 mt-2 text-md text-gray-400">
                 <span>
                   Question {currentQuestion + 1} of {quizQuestions.length}
                 </span>
@@ -252,12 +219,9 @@ export default function QuizPage() {
                 initialTime={quizQuestions.length * 2 * 60}
                 isRunning={!showResult}
                 onTimeUp={() => setShowResult(true)}
-                onTick={(t) => {
-                  console.log("Time left:", t);
-                }}
               />
             </div>
-            <Badge className="text-sm text-bold  text-amber-500">
+            <Badge className="text-sm font-bold text-amber-500">
               Score: {score}/{currentQuestion + (showExplanation ? 1 : 0)}
             </Badge>
           </div>
@@ -272,30 +236,24 @@ export default function QuizPage() {
         <Card className="mb-6 bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 shadow-xl">
           <CardHeader>
             <CardTitle className="text-lg leading-relaxed text-white">
-              <div className="flex  items-start  gap-4 ">
+              <div className="flex items-start gap-4">
                 <Badge className="bg-gradient-to-r p-2 from-amber-400 to-amber-600 text-white border-0">
-                  {question?.topic}
+                  {question.topic}
                 </Badge>
                 <Badge
-                  className={`bg-gradient-to-r   ${
-                    question?.difficulty === "Easy" &&
-                    "from-green-400 to-green-600"
-                  }
-                        ${
-                          question?.difficulty === "Medium" &&
-                          "from-yellow-400 to-yellow-600"
-                        }
-                        ${
-                          question?.difficulty === "Hard" &&
-                          "from-red-400 to-red-600"
-                        }
-                         text-white p-2 border-0`}
+                  className={`p-2 border-0 text-white ${
+                    question.difficulty === "Easy"
+                      ? "bg-gradient-to-r from-green-400 to-green-600"
+                      : question.difficulty === "Medium"
+                      ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
+                      : "bg-gradient-to-r from-red-400 to-red-600"
+                  }`}
                 >
-                  {question?.difficulty}
+                  {question.difficulty}
                 </Badge>
               </div>
               <hr className="border-gray-600 my-4" />
-              {question?.question}
+              {question.question}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -304,44 +262,47 @@ export default function QuizPage() {
               onValueChange={setSelectedAnswer}
             >
               <div className="space-y-3">
-                {question?.options.map((option: string, index: number) => (
-                  <div
-                    key={index}
-                    className={`flex items-center space-x-3 p-3 rounded-lg border transition-colors ${
-                      showExplanation
-                        ? index === question?.correct
-                          ? "bg-gradient-to-r from-green-600/20 to-emerald-600/20 border-green-500/50"
-                          : selectedAnswer === index.toString() &&
-                            index !== question?.correct
-                          ? "bg-gradient-to-r from-red-600/20 to-pink-600/20 border-red-500/50"
-                          : "bg-gray-700/50 border-gray-600"
-                        : selectedAnswer === index.toString()
-                        ? "bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-500/50"
-                        : "hover:bg-gray-700/50 border-gray-600"
-                    }`}
-                  >
-                    <RadioGroupItem
-                      value={index.toString()}
-                      id={`option-${index}`}
-                      disabled={showExplanation}
-                      className="text-white"
-                    />
-                    <Label
-                      htmlFor={`option-${index}`}
-                      className="flex-1 cursor-pointer text-white"
+                {question.options.map((option, index) => {
+                  const isCorrect = index === question.correct;
+                  const isSelected = selectedAnswer === index.toString();
+
+                  let bgClass = "bg-gray-700/50 border-gray-600";
+                  if (showExplanation) {
+                    if (isCorrect) {
+                      bgClass = "bg-green-600/20 border-green-500/50";
+                    } else if (isSelected) {
+                      bgClass = "bg-red-600/20 border-red-500/50";
+                    }
+                  } else if (isSelected) {
+                    bgClass = "bg-amber-400/20 border-amber-500/50";
+                  }
+
+                  return (
+                    <div
+                      key={index}
+                      className={`flex items-center space-x-3 p-3 rounded-lg border ${bgClass}`}
                     >
-                      {option}
-                    </Label>
-                    {showExplanation && index === question?.correct && (
-                      <CheckCircle className="h-5 w-5 text-green-400" />
-                    )}
-                    {showExplanation &&
-                      selectedAnswer === index.toString() &&
-                      index !== question?.correct && (
+                      <RadioGroupItem
+                        value={index.toString()}
+                        id={`option-${index}`}
+                        disabled={showExplanation}
+                        className="text-white"
+                      />
+                      <Label
+                        htmlFor={`option-${index}`}
+                        className="flex-1 text-white cursor-pointer"
+                      >
+                        {option}
+                      </Label>
+                      {showExplanation && isCorrect && (
+                        <CheckCircle className="h-5 w-5 text-green-400" />
+                      )}
+                      {showExplanation && isSelected && !isCorrect && (
                         <XCircle className="h-5 w-5 text-red-400" />
                       )}
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
             </RadioGroup>
           </CardContent>
@@ -357,7 +318,7 @@ export default function QuizPage() {
                   <p className="font-medium text-amber-300 mb-2">
                     Explanation:
                   </p>
-                  <p className="text-amber-100">{question?.explanation}</p>
+                  <p className="text-amber-100">{question.explanation}</p>
                 </div>
               </div>
             </CardContent>
@@ -369,23 +330,23 @@ export default function QuizPage() {
           <Button
             variant="outline"
             disabled={currentQuestion === 0}
+            onClick={() => setCurrentQuestion((prev) => prev - 1)}
             className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
           >
             Previous
           </Button>
-
           {!showExplanation ? (
             <Button
               onClick={handleAnswerSubmit}
               disabled={!selectedAnswer}
-              className="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-400/90 hover:to-amber-600/90 text-white border-0"
+              className="bg-gradient-to-r from-amber-400 to-amber-600 text-white"
             >
               Submit Answer
             </Button>
           ) : (
             <Button
               onClick={handleNext}
-              className="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-400/90 hover:to-amber-600/90 text-white border-0"
+              className="bg-gradient-to-r from-amber-400 to-amber-600 text-white"
             >
               {currentQuestion === quizQuestions.length - 1
                 ? "Finish Quiz"
