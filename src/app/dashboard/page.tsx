@@ -41,6 +41,51 @@ const recentActivities = [
 
 export default function Dashboard() {
   const { user, isLoaded } = useUser();
+
+  const setUserDetails = useZustandStore((state) => state.setUserDetails);
+  const [stats, setStats] = useState({
+    questionsAttempted: 0,
+    correctAnswers: 0,
+    accuracy: 0,
+    testattempted: 0,
+    rank: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+
+    setUserDetails(user); // ✅ put this inside useEffect to avoid running on every render
+
+    const fetchStats = async () => {
+      try {
+        const userStats = await appwriteServices.getUserStats(user.id);
+        setStats({
+          questionsAttempted: userStats.question_attempted || 0,
+          correctAnswers: userStats.question_corrected || 0,
+          accuracy: userStats.question_corrected
+            ? Math.round(
+                (userStats.question_corrected / userStats.question_attempted) *
+                  100
+              )
+            : 0,
+          testattempted: userStats.test_attempted || 0,
+          rank: userStats.global_rank || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [user]);
+
+  const accuracy = Math.round(
+    (stats.correctAnswers / stats.questionsAttempted) * 100
+  );
+
   if (!isLoaded || !user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
@@ -53,49 +98,7 @@ export default function Dashboard() {
       </div>
     );
   }
-  const setUserDetails = useZustandStore((state) => state.setUserDetails);
-  setUserDetails(user);
-  const [stats, setStats] = useState({
-    questionsAttempted: 0,
-    correctAnswers: 0,
-    accuracy: 0,
-    testattempted: 0,
-    rank: 0,
-  });
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const userStats = await appwriteServices.getUserStats(user?.id); // Replace with actual user ID
-        setStats({
-          questionsAttempted: userStats.question_attempted || 0,
-          correctAnswers: userStats.question_corrected || 0,
-          accuracy: userStats.question_corrected
-            ? Math.round(
-                (userStats.question_corrected / userStats.question_attempted) *
-                  100
-              )
-            : 0,
-          testattempted: userStats.test_attempted || 0,
-
-          rank: userStats.global_rank || 0,
-        });
-
-         
-
-      } catch (error) {
-        console.error("Error fetching stats:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, [user?.id]);
-  const accuracy = Math.round(
-    (stats.correctAnswers / stats.questionsAttempted) * 100
-  );
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
       <Header />
