@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
 import {
   Card,
   CardContent,
@@ -11,8 +12,12 @@ import {
 } from "@/components/ui/card";
 import { BookOpen, Brain, Clock, Target, Trophy, Zap } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../_components/Header/page";
+import appwriteServices from "@/appwrite/config";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@clerk/nextjs";
+import useZustandStore from "../store/quizZustandStore";
 const recentActivities = [
   {
     title: "Data Structures - Trees",
@@ -35,12 +40,59 @@ const recentActivities = [
 ];
 
 export default function Dashboard() {
-  const [stats] = useState({
-    questionsAttempted: 1247,
-    correctAnswers: 892,
-    streak: 12,
-    rank: 156,
+  const { user, isLoaded } = useUser();
+  if (!isLoaded || !user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
+        <Header />
+        <div className="max-w-6xl mt-4 mx-auto text-center">
+          <div className="animate-pulse">
+            <div className="h-10 w-10  rounded-full mx-auto mb-4 border-b-2 border-white  animate-spin"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  const setUserDetails = useZustandStore((state) => state.setUserDetails);
+  setUserDetails(user);
+  const [stats, setStats] = useState({
+    questionsAttempted: 0,
+    correctAnswers: 0,
+    accuracy: 0,
+    testattempted: 0,
+    rank: 0,
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const userStats = await appwriteServices.getUserStats(user?.id); // Replace with actual user ID
+        setStats({
+          questionsAttempted: userStats.question_attempted || 0,
+          correctAnswers: userStats.question_corrected || 0,
+          accuracy: userStats.question_corrected
+            ? Math.round(
+                (userStats.question_corrected / userStats.question_attempted) *
+                  100
+              )
+            : 0,
+          testattempted: userStats.test_attempted || 0,
+
+          rank: userStats.global_rank || 0,
+        });
+
+         
+
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [user?.id]);
   const accuracy = Math.round(
     (stats.correctAnswers / stats.questionsAttempted) * 100
   );
@@ -60,57 +112,96 @@ export default function Dashboard() {
         {/* Stats Cards */}
         {/* Questions Attempted*/}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-gradient-to-br from-blue-400 to-blue-700  border-blue-400 text-white shadow-xl">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100">Questions Attempted</p>
-                  <p className="text-2xl font-bold">
-                    {stats.questionsAttempted}
-                  </p>
-                </div>
+          {loading ? (
+            <Skeleton className="w-full bg-gradient-to-br from-blue-400 to-blue-700">
+              <div className="flex items-center justify-between p-4">
+                <p className="text-blue-100">Questions Attempted</p>
+
                 <Target className="h-8 w-8 text-blue-200" />
               </div>
-            </CardContent>
-          </Card>
-          {/*Accuracy */}
-          <Card className="bg-gradient-to-br from-green-400  to-green-800 border-green-400 text-white shadow-xl">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100">Accuracy</p>
-                  <p className="text-2xl font-bold">{accuracy}%</p>
+            </Skeleton>
+          ) : (
+            <Card className="bg-gradient-to-br from-blue-400 to-blue-700  border-blue-400 text-white shadow-xl">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-blue-100">Questions Attempted</p>
+                    <p className="text-2xl font-bold">
+                      {stats.questionsAttempted}
+                    </p>
+                  </div>
+                  <Target className="h-8 w-8 text-blue-200" />
                 </div>
+              </CardContent>
+            </Card>
+          )}
+          {/*Accuracy */}
+          {loading ? (
+            <Skeleton className="w-full bg-gradient-to-br from-green-400 to-green-800">
+              <div className="flex items-center justify-between p-4">
+                <p className="text-green-100">Accuracy</p>
                 <Trophy className="h-8 w-8 text-green-200" />
               </div>
-            </CardContent>
-          </Card>
+            </Skeleton>
+          ) : (
+            <Card className="bg-gradient-to-br from-green-400  to-green-800 border-green-400 text-white shadow-xl">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-green-100">Accuracy</p>
+                    <p className="text-2xl font-bold">
+                      {accuracy ? `${accuracy}%` : "N/A"}
+                    </p>
+                  </div>
+                  <Trophy className="h-8 w-8 text-green-200" />
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {/* Total Test Attempted*/}
 
-          <Card className="bg-gradient-to-br from-orange-400  to-orange-700 border-orange-500 text-white shadow-xl">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-orange-100">Test Attempted</p>
-                  <p className="text-2xl font-bold">{stats.streak}</p>
-                </div>
+          {loading ? (
+            <Skeleton className="w-full bg-gradient-to-br from-orange-400  to-orange-700">
+              <div className="flex items-center justify-between p-4">
+                <p className="text-orange-100">Test Attempted</p>
                 <Zap className="h-8 w-8 text-orange-200" />
               </div>
-            </CardContent>
-          </Card>
+            </Skeleton>
+          ) : (
+            <Card className="bg-gradient-to-br from-orange-400  to-orange-700 border-orange-500 text-white shadow-xl">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-orange-100">Test Attempted</p>
+                    <p className="text-2xl font-bold">{stats.testattempted}</p>
+                  </div>
+                  <Zap className="h-8 w-8 text-orange-200" />
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {/* Global Rank */}
 
-          <Card className="bg-gradient-to-br from-purple-400  to-purple-800 border-purple-500 text-white shadow-xl">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100">Global Rank</p>
-                  <p className="text-2xl font-bold">#{stats.rank}</p>
-                </div>
+          {loading ? (
+            <Skeleton className="w-full bg-gradient-to-br from-purple-400  to-purple-800">
+              <div className="flex items-center justify-between p-4">
+                <p className="text-purple-100">Global Rank</p>
                 <Trophy className="h-8 w-8 text-purple-200" />
               </div>
-            </CardContent>
-          </Card>
+            </Skeleton>
+          ) : (
+            <Card className="bg-gradient-to-br from-purple-400  to-purple-800 border-purple-500 text-white shadow-xl">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-purple-100">Global Rank</p>
+                    <p className="text-2xl font-bold">#{stats.rank}</p>
+                  </div>
+                  <Trophy className="h-8 w-8 text-purple-200" />
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Main Actions */}

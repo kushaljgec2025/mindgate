@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { sampleQuestions, streams, topics } from "../(data)/staticData"; // Adjust the import path as necessary
 import { generateAIQuestions } from "../../../utils/AIModel";
-import useQuizZustandStore from "../../app/store/quizZustandStore";
+import useZustandStore from "../../app/store/quizZustandStore";
 import Header from "../_components/Header/page";
 // Importing sample questions for testing
 
@@ -57,7 +57,9 @@ export default function PracticePage() {
         return "Medium";
     }
   };
-  const setQuestions = useQuizZustandStore((state) => state.setQuizQuestions);
+  
+  
+  const setQuestions = useZustandStore((state) => state.setQuizQuestions);
   const router = useRouter();
   const generateQuestions = async () => {
     setLoading(true);
@@ -349,17 +351,17 @@ export default function PracticePage() {
             </Card>
 
             <Button
-              className={`w-full bg-gradient-to-r from-amber-400 to-amber-600 text-white hover:from-amber-400/90 hover:to-amber-600/90 ${
-                loading ? "animate-pulse" : ""
-              }`}
+              className={`w-full bg-gradient-to-r from-amber-400 to-amber-600 text-white hover:from-amber-400/90 hover:to-amber-600/90 
+                ${loading ? "animate-pulse" : ""}
+                `}
               disabled={
                 !selectedStream || selectedTopics.length === 0 || loading
               }
               onClick={generateQuestions}
             >
               {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="flex items-center gap-2 animate-pulse">
+                  <div className="h-4 w-4  border-b-2 border-white  rounded-full animate-spin" />
                   Generating...
                 </div>
               ) : (

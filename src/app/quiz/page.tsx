@@ -1,5 +1,5 @@
 "use client";
-import useQuizZustandStore from "../store/quizZustandStore"; // ✅ Zustand import
+import useZustandStore from "../store/quizZustandStore"; // ✅ Zustand import
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,9 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import Stopwatch from "../_components/Stopwatch";
+import appwriteServices from "@/appwrite/config";
+
+import { stat } from "fs";
 // {
 //     QuestionsDescription:
 //       "Consider the CIDR block 203.0.113.0/24. If this block is to be subnetted into 8 equal-sized subnets, what is the maximum number of usable host IP addresses in each of these new subnets?",
@@ -53,8 +56,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
   // const [QuestionSet, setQuestionSet] = useState([]);
-  const quizQuestions = useQuizZustandStore((state) => state.QuizQuestions);
-  console.log("Quiz Questions:", quizQuestions);
+  const quizQuestions = useZustandStore((state) => state.QuizQuestions);
 
   const handleAnswerSubmit = () => {
     const answerIndex = Number.parseInt(selectedAnswer);
@@ -68,7 +70,50 @@ export default function QuizPage() {
 
     setShowExplanation(true);
   };
+  const userDetails = useZustandStore((state) => state.userDetails);
+  type UserStats = {
+    userid: string;
+    question_attempted: number;
+    question_corrected: number;
+    test_attempted: number;
+    global_rank: number;
+  };
+  const update_user_stats = async (stats: UserStats) => {
+    try {
+      let existingStats = null;
 
+      try {
+        existingStats = await appwriteServices.getUserStats(stats.userid);
+      } catch (err: any) {
+        if (err.code === 404) {
+          // No existing stats — this is fine
+          console.log("No existing user stats found, will create new entry.");
+        } else {
+          // Unexpected error
+          throw err;
+        }
+      }
+
+      if (existingStats) {
+        stats.question_attempted += existingStats.question_attempted || 0;
+        stats.question_corrected += existingStats.question_corrected || 0;
+        stats.test_attempted = (existingStats.test_attempted || 0) + 1;
+        stats.global_rank = existingStats.global_rank;
+      } else {
+        stats.test_attempted = 1; // first test
+      }
+
+      await appwriteServices.createUserStats({
+        userid: userDetails?.id,
+        question_attempted: stats.question_attempted,
+        question_corrected: stats.question_corrected,
+        test_attempted: stats.test_attempted,
+        global_rank: stats.global_rank,
+      });
+    } catch (error: any) {
+      console.error("Error updating user stats:", error);
+    }
+  };
   const handleNext = () => {
     if (currentQuestion < quizQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -76,6 +121,13 @@ export default function QuizPage() {
       setShowExplanation(false);
     } else {
       setShowResult(true);
+      update_user_stats({
+        userid: userDetails?.id,
+        question_attempted: quizQuestions.length,
+        question_corrected: score,
+        test_attempted: 1, // Assuming this is the first test attempt
+        global_rank: 5, // Placeholder for global rank
+      });
     }
   };
 
@@ -197,7 +249,7 @@ export default function QuizPage() {
             <div className="flex items-center gap-2 text-sm">
               <Clock className="h-6 w-6 text-amber-400" />
               <Stopwatch
-                initialTime={300}
+                initialTime={quizQuestions.length * 2 * 60}
                 isRunning={!showResult}
                 onTimeUp={() => setShowResult(true)}
                 onTick={(t) => {

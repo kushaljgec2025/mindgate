@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-const useQuizZustandStore = create((set) => ({
+const useZustandStore = create((set) => ({
     // Quiz-related state
     QuizQuestions: [],
     setQuizQuestions: (data) => set({ QuizQuestions: data }),
@@ -19,4 +19,4 @@ const useQuizZustandStore = create((set) => ({
 
 
 
-export default useQuizZustandStore
+export default useZustandStore
