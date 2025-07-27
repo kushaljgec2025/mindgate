@@ -1,7 +1,7 @@
 import conf from "@/conf/config";
 import { Client, Databases, Account, Storage } from "appwrite";
 
-let appwriteClient: Client | null = null;
+let appwriteClient: Client;
 let databases: Databases;
 let account: Account;
 let storage: Storage;
