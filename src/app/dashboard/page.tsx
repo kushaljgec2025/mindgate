@@ -61,16 +61,17 @@ export default function Dashboard() {
       try {
         const userStats = await appwriteServices.getUserStats(user.id);
         setStats({
-          questionsAttempted: userStats.question_attempted || 0,
-          correctAnswers: userStats.question_corrected || 0,
-          accuracy: userStats.question_corrected
+          questionsAttempted: userStats?.question_attempted || 0,
+          correctAnswers: userStats?.question_corrected || 0,
+          accuracy: userStats?.question_corrected
             ? Math.round(
-                (userStats.question_corrected / userStats.question_attempted) *
+                (userStats?.question_corrected /
+                  userStats?.question_attempted) *
                   100
               )
             : 0,
-          testattempted: userStats.test_attempted || 0,
-          rank: userStats.global_rank || 0,
+          testattempted: userStats?.test_attempted || 0,
+          rank: userStats?.global_rank || 0,
         });
       } catch (error) {
         console.error("Error fetching stats:", error);
@@ -83,7 +84,7 @@ export default function Dashboard() {
   }, [user]);
 
   const accuracy = Math.round(
-    (stats.correctAnswers / stats.questionsAttempted) * 100
+    (stats?.correctAnswers / stats?.questionsAttempted) * 100
   );
 
   if (!isLoaded || !user) {
