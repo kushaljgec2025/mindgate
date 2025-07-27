@@ -59,7 +59,7 @@ export default function Dashboard() {
 
     const fetchStats = async () => {
       try {
-        const userStats = await appwriteServices.getUserStats(user.id);
+        const userStats = await appwriteServices.getUserStats(user?.id);
         setStats({
           questionsAttempted: userStats?.question_attempted || 0,
           correctAnswers: userStats?.question_corrected || 0,
