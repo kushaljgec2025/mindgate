@@ -55,7 +55,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return;
 
-    setUserDetails(user); // ✅ put this inside useEffect to avoid running on every render
+    setUserDetails(user);
 
     const fetchStats = async () => {
       try {
@@ -82,10 +82,6 @@ export default function Dashboard() {
 
     fetchStats();
   }, [user]);
-
-  const accuracy = Math.round(
-    (stats?.correctAnswers / stats?.questionsAttempted) * 100
-  );
 
   if (!isLoaded || !user) {
     return (
@@ -154,7 +150,7 @@ export default function Dashboard() {
                   <div>
                     <p className="text-green-100">Accuracy</p>
                     <p className="text-2xl font-bold">
-                      {accuracy ? `${accuracy}%` : "N/A"}
+                      {stats?.accuracy ? `${stats?.accuracy}%` : "N/A"}
                     </p>
                   </div>
                   <Trophy className="h-8 w-8 text-green-200" />
@@ -177,7 +173,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-orange-100">Test Attempted</p>
-                    <p className="text-2xl font-bold">{stats.testattempted}</p>
+                    <p className="text-2xl font-bold">{stats?.testattempted}</p>
                   </div>
                   <Zap className="h-8 w-8 text-orange-200" />
                 </div>
@@ -199,7 +195,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-purple-100">Global Rank</p>
-                    <p className="text-2xl font-bold">#{stats.rank}</p>
+                    <p className="text-2xl font-bold">#{stats?.rank}</p>
                   </div>
                   <Trophy className="h-8 w-8 text-purple-200" />
                 </div>
@@ -287,21 +283,21 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
+              {recentActivities?.map((activity, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg border border-gray-600"
                 >
                   <div>
-                    <p className="font-medium text-white">{activity.title}</p>
+                    <p className="font-medium text-white">{activity?.title}</p>
                     <p className="text-sm text-gray-300">
-                      {activity.description}
+                      {activity?.description}
                     </p>
                   </div>
                   <Badge
-                    className={`bg-gradient-to-r ${activity.badgeGradient} text-white border-0`}
+                    className={`bg-gradient-to-r ${activity?.badgeGradient} text-white border-0`}
                   >
-                    {activity.badge}
+                    {activity?.badge}
                   </Badge>
                 </div>
               ))}
