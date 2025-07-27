@@ -1,14 +1,23 @@
 import conf from "@/conf/config";
-import { Client, Databases, Account, ID, Storage } from "appwrite";
+import { Client, Databases, Account, Storage, ID } from "appwrite";
 
-const appwriteClient = new Client();
+let appwriteClient: Client | null = null;
+let databases: Databases;
+let account: Account;
+let storage: Storage;
 
-appwriteClient.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
+if (typeof window !== "undefined") {
+  appwriteClient = new Client();
+  appwriteClient
+    .setEndpoint(conf.appwriteUrl)
+    .setProject(conf.appwriteProjectId);
 
-export const account = new Account(appwriteClient);
-export const databases = new Databases(appwriteClient);
-export const storage = new Storage(appwriteClient);
+  databases = new Databases(appwriteClient);
+  account = new Account(appwriteClient);
+  storage = new Storage(appwriteClient);
+}
 
+// Use types so it doesn't break if used before initialization
 type UserStats = {
   userid: string;
   question_attempted: number;
@@ -19,39 +28,24 @@ type UserStats = {
 
 export class AppwriteService {
   async createUserStats(stats: UserStats) {
-    try {
-      const collection = await databases.upsertDocument(
-        conf.appwriteDatabaseId,
-        conf.appwriteCollectionUserStats,
-        stats.userid,
-        {
-          ...stats,
-        }
-      );
-      if (collection) {
-        console.log("User stats pushed successfully:", collection);
-      }
-    } catch (error: any) {
-      console.error("Error pushing user stats:", error);
-      throw error;
-    }
+    if (!databases) throw new Error("Appwrite client not initialized");
+    return await databases.upsertDocument(
+      conf.appwriteDatabaseId,
+      conf.appwriteCollectionUserStats,
+      stats.userid,
+      { ...stats }
+    );
   }
 
   async getUserStats(userId: string) {
-    try {
-      const stats = await databases.getDocument(
-        conf.appwriteDatabaseId,
-        conf.appwriteCollectionUserStats,
-        userId
-      );
-      return stats;
-    } catch (error: any) {
-      console.error("Error fetching user stats:", error);
-      throw error;
-    }
+    if (!databases) throw new Error("Appwrite client not initialized");
+    return await databases.getDocument(
+      conf.appwriteDatabaseId,
+      conf.appwriteCollectionUserStats,
+      userId
+    );
   }
 }
 
 const appwriteServices = new AppwriteService();
-
 export default appwriteServices;
