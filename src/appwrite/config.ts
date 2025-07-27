@@ -1,21 +1,17 @@
 import conf from "@/conf/config";
-import { Client, Databases, Account, Storage, ID } from "appwrite";
+import { Client, Databases, Account, Storage } from "appwrite";
 
 let appwriteClient: Client | null = null;
 let databases: Databases;
 let account: Account;
 let storage: Storage;
 
-if (typeof window !== "undefined") {
-  appwriteClient = new Client();
-  appwriteClient
-    .setEndpoint(conf.appwriteUrl)
-    .setProject(conf.appwriteProjectId);
+appwriteClient = new Client();
+appwriteClient.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
 
-  databases = new Databases(appwriteClient);
-  account = new Account(appwriteClient);
-  storage = new Storage(appwriteClient);
-}
+databases = new Databases(appwriteClient);
+account = new Account(appwriteClient);
+storage = new Storage(appwriteClient);
 
 // Use types so it doesn't break if used before initialization
 type UserStats = {
